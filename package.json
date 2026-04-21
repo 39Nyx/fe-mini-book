@@ -71,7 +71,7 @@
     "stylelint": "^14.9.1"
   },
   "dependencies": {
-    "@39nyx/dumi-theme-skk": "^1.4.6",
+    "@39nyx/dumi-theme-skk": "^1.4.7",
     "@dumijs/preset-vue": "^2.4.14",
     "vue": "^3.5.32"
   }
