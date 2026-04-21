@@ -2,6 +2,10 @@ import { defineConfig } from 'dumi';
 
 const nav = [
   {
+    title: 'JavaScript',
+    link: '/javascript'
+  },
+  {
     title: 'Vue',
     link: '/vue'
   },
