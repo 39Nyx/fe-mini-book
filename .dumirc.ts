@@ -22,6 +22,10 @@ const nav = [
     link: '/browser'
   },
   {
+    title: '工程化',
+    link: '/engineering'
+  },
+  {
     title: '手写系列',
     link: '/hand-writing'
   }
