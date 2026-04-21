@@ -1,9 +1,18 @@
 import { defineConfig } from 'dumi';
 
+const nav = [
+  {
+    title: '手写系列',
+    link: '/hand-writing'
+  }
+]
+
+
 export default defineConfig({
   outputPath: 'docs-dist',
   themeConfig: {
     name: 'fe-mini-book',
+    nav,
   },
   codeSplitting: {
     jsStrategy: 'depPerChunk'
