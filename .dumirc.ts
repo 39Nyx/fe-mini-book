@@ -10,6 +10,10 @@ const nav = [
     link: '/scenario'
   },
   {
+    title: '算法',
+    link: '/algorithm'
+  },
+  {
     title: '手写系列',
     link: '/hand-writing'
   }
