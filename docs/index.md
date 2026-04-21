@@ -12,7 +12,7 @@ features:
   - title: JavaScript 核心
     image: ⚡
     description: 深入理解 JS 原型链、闭包、事件循环、异步编程、ES6+ 新特性、内存管理、性能优化等高频面试考点
-    link: /guide/javascript
+    link: /javascript
     row: 7
 
   - title: Vue 源码解析
@@ -24,25 +24,25 @@ features:
   - title: React 原理
     image: ⚛️
     description: 掌握 React  Fiber 架构、Hooks 原理、状态管理、性能优化等核心概念，轻松应对 React 相关面试题
-    link: /guide/react
+    link: /react
     row: 7
 
   - title: 工程化实践
     image: 🛠️
     description: Webpack/Vite 构建配置、Babel 编译原理、CI/CD 流程、代码规范、模块化方案等前端工程化必备技能
-    link: /guide/engineering
+    link: /engineering
     row: 7
 
   - title: 浏览器与网络
     image: 🌐
     description: 浏览器渲染原理、缓存策略、HTTP/HTTPS 协议、TCP/IP、跨域解决方案、性能优化指标与实战
-    link: /guide/browser
+    link: /browser
     row: 7
 
   - title: 数据结构与算法
     image: 🧮
     description: 常见数据结构、经典算法题解析、LeetCode 刷题技巧、时间/空间复杂度分析，提升编程思维能力
-    link: /guide/algorithm
+    link: /algorithm
     row: 7
 
   - title: 手写代码专题
@@ -54,6 +54,6 @@ features:
   - title: 场景题与设计模式
     image: 🏗️
     description: 前端常见业务场景解决方案、设计模式应用、组件设计、架构设计等综合能力考察点
-    link: /guide/scenario
+    link: /scenario
     row: 7
 ---
