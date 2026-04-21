@@ -6,6 +6,10 @@ const nav = [
     link: '/vue'
   },
   {
+    title: '场景题',
+    link: '/scenario'
+  },
+  {
     title: '手写系列',
     link: '/hand-writing'
   }
