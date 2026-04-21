@@ -7,7 +7,7 @@
 | 模块 | 说明 | 链接 |
 |------|------|------|
 | **JavaScript 核心** | 原型链、闭包、事件循环、异步编程、ES6+ | [查看](/guide/javascript) |
-| **Vue 源码解析** | 响应式原理、虚拟 DOM、编译优化 | [查看](/guide/vue) |
+| **Vue 源码解析** | 响应式原理、虚拟 DOM、编译优化 | [查看](/docs/vue/vue.md) |
 | **React 原理** | Fiber 架构、Hooks、状态管理 | [查看](/guide/react) |
 | **工程化实践** | Webpack/Vite、Babel、CI/CD | [查看](/guide/engineering) |
 | **浏览器与网络** | 渲染原理、HTTP、缓存、性能优化 | [查看](/guide/browser) |

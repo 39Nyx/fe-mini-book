@@ -18,7 +18,7 @@ features:
   - title: Vue 源码解析
     image: 💚
     description: 从响应式原理到虚拟 DOM，从组件化到编译优化，深入剖析 Vue2/Vue3 核心源码与设计思想
-    link: /guide/vue
+    link: /vue
     row: 7
 
   - title: React 原理
@@ -48,7 +48,7 @@ features:
   - title: 手写代码专题
     image: ✍️
     description: Promise、防抖节流、深拷贝、数组方法、 bind/call/apply、JSONP 等高频手写题源码实现
-    link: /guide/handwriting
+    link: /hand-writing
     row: 7
 
   - title: 场景题与设计模式

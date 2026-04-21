@@ -2,6 +2,10 @@ import { defineConfig } from 'dumi';
 
 const nav = [
   {
+    title: 'Vue',
+    link: '/vue'
+  },
+  {
     title: '手写系列',
     link: '/hand-writing'
   }
