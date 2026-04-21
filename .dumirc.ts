@@ -14,6 +14,10 @@ const nav = [
     link: '/algorithm'
   },
   {
+    title: '浏览器',
+    link: '/browser'
+  },
+  {
     title: '手写系列',
     link: '/hand-writing'
   }
