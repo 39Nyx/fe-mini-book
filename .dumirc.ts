@@ -38,6 +38,8 @@ const nav = [
 
 export default defineConfig({
   outputPath: 'docs-dist',
+  base: process.env.DUMI_BASE || '/',
+  publicPath: process.env.DUMI_PUBLIC_PATH || '/',
   themeConfig: {
     name: 'fe-mini-book',
     nav,
