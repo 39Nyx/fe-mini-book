@@ -74,6 +74,104 @@ async function fetchData() {
 fetchData().then(data => console.log(data));
 ```
 
+## async/await 的缺点与使用陷阱
+
+async/await 提升了异步代码的可读性，但写法上「像同步」容易让人忽略异步本质，滥用会带来以下问题。
+
+### 1. 串行阻塞，丢失并发能力
+
+最常见的反模式——把本可并发的请求写成串行：
+
+```js
+// ❌ 串行：总耗时 = a + b + c
+const a = await fetchA();
+const b = await fetchB();
+const c = await fetchC();
+
+// ✅ 并发：总耗时 = max(a, b, c)
+const [a, b, c] = await Promise.all([fetchA(), fetchB(), fetchC()]);
+```
+
+只有后一个请求**依赖**前一个结果时才该用串行 await。
+
+### 2. 循环中 await 的陷阱
+
+`forEach / map` 回调中的 `await` **不会被外层等待**：
+
+```js
+// ❌ 外层 async 函数会提前结束
+list.forEach(async (item) => {
+  await handle(item);
+});
+
+// ✅ 需要顺序：for...of
+for (const item of list) {
+  await handle(item);
+}
+
+// ✅ 需要并发：Promise.all + map
+await Promise.all(list.map(item => handle(item)));
+```
+
+### 3. 错误处理样板代码膨胀
+
+- 每个 await 都可能抛错，需要 try/catch 包裹，嵌套后可读性反而变差
+- 漏掉一个 catch 就产生 `UnhandledPromiseRejection`，Node 新版本会直接 crash
+
+```js
+// 推荐：封装 to() 返回 [err, data] 元组
+const to = (p) => p.then(d => [null, d]).catch(e => [e, null]);
+const [err, data] = await to(fetch('/api'));
+```
+
+### 4. 调试与调用栈断裂
+
+- await 后的代码进入微任务队列，调用栈会断开
+- 报错堆栈常只显示 async 函数入口，难以定位真正源头（现代引擎的 Async Stack Trace 已有所缓解）
+
+### 5. 微任务过多可能阻塞渲染
+
+- 每个 await 都会产生一个微任务；在高频循环或递归中使用，会让微任务队列持续被填充
+- 浏览器必须等微任务清空后才能渲染，导致**掉帧、卡顿**
+
+### 6. 内存泄漏与缺乏取消机制
+
+- 未 resolve 的 await 会让整个 async 函数闭包常驻内存
+- 原生没有取消能力，需配合 `AbortController` 手动实现
+
+```js
+// React 中的典型泄漏
+useEffect(() => {
+  async function load() {
+    const data = await fetch(url); // 组件卸载后仍会 setState
+    setState(data);
+  }
+  load();
+}, []);
+```
+
+### 7. 异步传染性（Async Contagion）
+
+一个函数用了 await，调用它的函数必须是 async，层层向上扩散，导致**整条调用链都被染色**，同步 API 被迫改造为异步。
+
+### 8. 顶层 await 的限制
+
+- 仅 ESM 支持顶层 await，CommonJS 不支持
+- 模块顶层 await 会**阻塞依赖它的其他模块加载**，可能拖慢启动
+
+### 最佳实践速查
+
+| 场景 | 推荐做法 |
+|------|---------|
+| 多个独立请求 | `Promise.all` / `Promise.allSettled` |
+| 限流并发 | 手写 asyncPool 或 `p-limit` |
+| 循环顺序执行 | `for...of` + await |
+| 统一错误处理 | 封装 `to(promise)` 返回 `[err, data]` |
+| 可取消 | 配合 `AbortController` |
+| 热路径 | 避免在紧密循环中 await，改批处理 |
+
+**一句话总结**：async/await 让你「按同步思维写异步」，但用之前要想清楚这段逻辑**该串行还是并行**，以及如何处理错误和取消。
+
 ## 高频面试题
 
 ### Q1: 宏任务和微任务的区别？
