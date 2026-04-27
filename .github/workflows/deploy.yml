@@ -1,0 +1,84 @@
+# 工作流名称，会展示在 GitHub Actions 页面
+name: Deploy Docs to GitHub Pages
+
+# 触发条件
+on:
+  # 推送到主分支时自动触发
+  push:
+    branches:
+      - main
+      - master
+  # 支持在 Actions 页面手动触发
+  workflow_dispatch:
+
+# 授予 GITHUB_TOKEN 的权限（GitHub Pages 部署必需）
+permissions:
+  contents: read       # 读取仓库内容
+  pages: write         # 写入 Pages（发布站点）
+  id-token: write      # 用于 OIDC 身份验证，deploy-pages 需要
+
+# 并发控制：同一时刻只允许一个 pages 部署任务在运行
+concurrency:
+  group: pages
+  cancel-in-progress: false   # 不中断正在进行的部署，避免站点处于损坏状态
+
+jobs:
+  # ============ 构建任务 ============
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      # 1. 拉取仓库代码
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. 安装 pnpm（必须在 setup-node 前，以便启用 pnpm 缓存）
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      # 3. 安装 Node.js 并启用 pnpm 依赖缓存，加速后续构建
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      # 4. 按 lockfile 安装依赖，确保 CI 环境依赖一致
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # 5. 构建 dumi 文档
+      #    GitHub Pages 项目站点位于 https://<user>.github.io/<repo>/ 子路径下
+      #    通过环境变量向 .dumirc.ts 注入 base / publicPath，避免静态资源 404
+      - name: Build docs
+        env:
+          DUMI_BASE: /${{ github.event.repository.name }}/
+          DUMI_PUBLIC_PATH: /${{ github.event.repository.name }}/
+        run: pnpm run docs:build
+
+      # 6. 初始化 GitHub Pages 环境配置
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      # 7. 将构建产物打包上传为 Pages 部署所需的 artifact
+      #    path 指向 dumi 的产物目录（.dumirc.ts 中 outputPath: 'docs-dist'）
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs-dist
+
+  # ============ 部署任务 ============
+  deploy:
+    name: Deploy
+    needs: build                 # 依赖 build 任务成功后才执行
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages         # 绑定到 github-pages 环境
+      url: ${{ steps.deployment.outputs.page_url }}   # 部署完成后输出的访问地址
+    steps:
+      # 将上一步上传的 artifact 发布到 GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
